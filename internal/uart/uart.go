@@ -9,6 +9,7 @@ import (
 	"periph.io/x/conn/v3/uart"
 	"periph.io/x/conn/v3/uart/uartreg"
 	"periph.io/x/host/v3"
+	_ "periph.io/x/host/v3/rpi"
 )
 
 // UART handles UART communication with optional obfuscation.
@@ -42,16 +43,21 @@ func NewUART(conn conn.Conn, opts ...Option) *UART {
 
 // OpenUART initializes a UART connection
 func OpenUART() (conn.Conn, uart.PortCloser, error) {
-	_, err := host.Init()
-	if err != nil {
-		return nil, nil, err
+	log.Println("Initializing host ...")
+	host.Init()
+
+	ports := uartreg.All()
+	if len(ports) == 0 {
+		return nil, nil, fmt.Errorf("no UART ports registered")
 	}
 
-	for _, port := range uartreg.All() {
-		fmt.Printf("Found UART: %s\n", port.Name)
+	log.Println("Available UART ports:")
+	for _, port := range ports {
+		fmt.Printf("  - %s (%d)\n", port.Name, port.Number)
 	}
 
 	// Use uartreg UART port registry to find the first available UART port.
+	log.Println("Trying to connect to /dev/ttyAMA2...")
 	portCloser, err := uartreg.Open("/dev/ttyAMA2")
 	if err != nil {
 		log.Fatal(err)
@@ -59,15 +65,16 @@ func OpenUART() (conn.Conn, uart.PortCloser, error) {
 
 	// Prints out the gpio pin used.
 	if p, ok := portCloser.(uart.Pins); ok {
-		fmt.Printf("  RX : %s", p.RX())
-		fmt.Printf("  TX : %s", p.TX())
+		log.Printf("  RX : %s", p.RX())
+		log.Printf("  TX : %s", p.TX())
 		// These aren't connected so there shouldn't be any output, just testing.
-		fmt.Printf("  RTS: %s", p.RTS())
-		fmt.Printf("  CTS: %s", p.CTS())
+		log.Printf("  RTS: %s", p.RTS())
+		log.Printf("  CTS: %s", p.CTS())
 	}
 
 	// Config for the Jura Machine will be passed in via an Config Object later on
 	// https://protocol-jura.at.ua/index/protocol_to_coffeemaker/0-8: 9600 Baud, One Stop Bit, No Parity, 8 Bits
+	log.Println("Open connection with port...")
 	conn, err := portCloser.Connect(9600*physic.Hertz, uart.One, uart.NoParity, uart.NoFlow, 8)
 	if err != nil {
 		portCloser.Close()
