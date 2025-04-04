@@ -48,6 +48,10 @@ func OpenUART() (conn.Conn, uart.PortCloser, error) {
 		return nil, nil, err
 	}
 
+	for _, port := range uartreg.All() {
+		fmt.Printf("Found UART: %s\n", port.Name)
+	}
+
 	if _, err := driverreg.Init(); err != nil {
 		log.Fatal(err)
 	}
