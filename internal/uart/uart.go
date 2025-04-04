@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"periph.io/x/conn/v3"
-	"periph.io/x/conn/v3/driver/driverreg"
 	"periph.io/x/conn/v3/physic"
 	"periph.io/x/conn/v3/uart"
 	"periph.io/x/conn/v3/uart/uartreg"
@@ -50,10 +49,6 @@ func OpenUART() (conn.Conn, uart.PortCloser, error) {
 
 	for _, port := range uartreg.All() {
 		fmt.Printf("Found UART: %s\n", port.Name)
-	}
-
-	if _, err := driverreg.Init(); err != nil {
-		log.Fatal(err)
 	}
 
 	// Use uartreg UART port registry to find the first available UART port.

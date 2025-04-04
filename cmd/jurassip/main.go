@@ -32,8 +32,8 @@ func main() {
 	fmt.Println("Did it work?")
 
 	// Setup Blockchain Listener
-	rpcURL := "http://134.155.50.136:8506"
-	contractAddress := "0xSomeContractAddress"
+	// rpcURL := "http://134.155.50.136:8506"
+	// contractAddress := "0xSomeContractAddress"
 
 	// Create a channel to listen for interrupts
 	interruptChannel := make(chan os.Signal, 1)
