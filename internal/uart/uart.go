@@ -53,7 +53,7 @@ func OpenUART() (conn.Conn, uart.PortCloser, error) {
 	}
 
 	// Use uartreg UART port registry to find the first available UART port.
-	portCloser, err := uartreg.Open("")
+	portCloser, err := uartreg.Open("/dev/ttyAMA2")
 	if err != nil {
 		log.Fatal(err)
 	}
