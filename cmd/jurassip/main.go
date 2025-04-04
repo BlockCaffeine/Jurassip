@@ -8,7 +8,6 @@ import (
 	"syscall"
 
 	"github.com/BlockCaffeine/Jurassip/internal/adapter"
-	"github.com/BlockCaffeine/Jurassip/internal/blockchain"
 	"github.com/BlockCaffeine/Jurassip/internal/uart"
 )
 
@@ -28,23 +27,29 @@ func main() {
 	uartHandler := uart.NewUART(conn, uart.WithObfuscation(uart.JuraObfuscation))
 	juraAdapter := adapter.NewJuraAdapter(uartHandler)
 
+	fmt.Println("Shutting machine off")
+	juraAdapter.PowerOff()
+	fmt.Println("Did it work?")
+
 	// Setup Blockchain Listener
 	rpcURL := "http://134.155.50.136:8506"
 	contractAddress := "0xSomeContractAddress"
-
-	fmt.Println("Setting up Blockchain Listener ...")
-	listener, err := blockchain.NewListener(rpcURL, contractAddress, juraAdapter)
-	if err != nil {
-		log.Fatal("Failed to initialize blockchain listener:", err)
-	}
 
 	// Create a channel to listen for interrupts
 	interruptChannel := make(chan os.Signal, 1)
 	signal.Notify(interruptChannel, syscall.SIGINT, syscall.SIGTERM)
 
-	// Start the blockchain listener in a goroutine, passing the interrupt channel
-	// to close the listener for incoming interrupts.
-	go listener.WatchPayments(interruptChannel)
+	/*
+		fmt.Println("Setting up Blockchain Listener ...")
+		listener, err := blockchain.NewListener(rpcURL, contractAddress, juraAdapter)
+		if err != nil {
+			log.Fatal("Failed to initialize blockchain listener:", err)
+		}
+
+		// Start the blockchain listener in a goroutine, passing the interrupt channel
+		// to close the listener for incoming interrupts.
+		go listener.WatchPayments(interruptChannel)
+	*/
 
 	// Block until a signal is received
 	<-interruptChannel
