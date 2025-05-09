@@ -1,6 +1,7 @@
 mod protocol {
     pub mod char_to_bytes;
     pub mod bytes_to_char;
+    pub mod utils;
 }
 
 mod serial {
@@ -12,6 +13,8 @@ mod serial {
 
 use protocol::char_to_bytes::char_to_bytes;
 use protocol::bytes_to_char::bytes_to_char;
+use protocol::utils::format_obfuscated_bytes;
+
 use serial::list_ports::list_ports;
 use serial::connect::connect;
 use serial::serial_read::serial_read;
@@ -23,7 +26,7 @@ use std::error::Error;
 fn main() {
     // Example character to demonstrate conversion of a char to 4 obfuscated bytes and in reverse
 
-    let input_char: char = 'A'; // Example character
+    let input_char: char = 'N'; // Example character
 
     let ascii: u8 = input_char as u8;
 
@@ -35,7 +38,7 @@ fn main() {
 
     println!("Obfuscated: ");
     for byte in obfuscated.iter() {
-        println!("{:08b}", byte);
+        println!("{}", format_obfuscated_bytes(*byte));
     }
 
     println!("REVERSE ------------------");
