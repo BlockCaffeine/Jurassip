@@ -20,13 +20,6 @@ pub fn list_ports() {
                         println!("        Type: USB");
                         println!("        VID: {:04x}", info.vid);
                         println!("        PID: {:04x}", info.pid);
-                        #[cfg(feature = "usbportinfo-interface")]
-                        println!(
-                            "        Interface: {}",
-                            info.interface
-                                .as_ref()
-                                .map_or("".to_string(), |x| format!("{:02x}", *x))
-                        );
                         println!(
                             "        Serial Number: {}",
                             info.serial_number.as_ref().map_or("", String::as_str)
