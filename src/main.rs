@@ -6,14 +6,16 @@ mod protocol {
 mod serial {
     pub mod list_ports;
     pub mod connect;
-    pub mod stream_input;
+    pub mod serial_read;
+    pub mod serial_write;
 }
 
 use protocol::char_to_bytes::char_to_bytes;
 use protocol::bytes_to_char::bytes_to_char;
 use serial::list_ports::list_ports;
 use serial::connect::connect;
-use serial::stream_input::stream_input;
+use serial::serial_read::serial_read;
+use serial::serial_write::serial_write;
 
 use serialport::SerialPort;
 use std::error::Error;
@@ -57,7 +59,8 @@ fn main() {
         }
     };
 
-    stream_input(&mut port);
-    
+    serial_write(&mut port); // TESTING ONLY
+
+    serial_read(&mut port); // TESTING ONLY - unreachable
     
 }

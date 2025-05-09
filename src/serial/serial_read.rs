@@ -1,6 +1,6 @@
 use serialport::SerialPort;
 
-pub fn stream_input(port: &mut Box<dyn SerialPort>) {
+pub fn serial_read(port: &mut Box<dyn SerialPort>) {
     let mut buffer: Vec<u8> = vec![0; 1024];
     loop {
         match port.read(&mut buffer) {
