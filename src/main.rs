@@ -21,7 +21,7 @@ use serialport::SerialPort;
 use std::error::Error;
 
 fn main() {
-    println!("Hello, world!");
+    // Example character to demonstrate conversion of a char to 4 obfuscated bytes and in reverse
 
     let input_char: char = 'A'; // Example character
 
@@ -44,9 +44,10 @@ fn main() {
     println!("Deobfuscated: '{}'", deobfuscated);
 
 
-    // Serial connection
+    // Serial connection testing
     list_ports();
 
+    // Connect to the serial port
     let port_result: Result<Box<dyn SerialPort + 'static>, Box<dyn Error + 'static>> = connect("/dev/tty.usbserial-1110", 9600);
     let mut port: Box<dyn SerialPort + 'static> = match port_result {
         Ok(port) => {
