@@ -25,5 +25,21 @@ pub fn serial_write(port: &mut Box<dyn SerialPort>) {
             }
             port.flush().expect("Failed to flush");
         }
+
+        // Send CR LF sequence in obfuscated format
+        let cr_lf: [char; 2] = ['\r', '\n'];
+        for c in cr_lf {
+            let obfuscated: [u8; 4] = char_to_bytes(c);
+            println!("Sending '{}' as bytes:", c);
+            for byte in obfuscated.iter() {
+                println!("Byte: {:08b} (0x{:02X})", byte, byte);
+            }
+
+            if let Err(e) = port.write_all(&obfuscated) {
+                eprintln!("Error sending data: {}", e);
+                continue;
+            }
+            port.flush().expect("Failed to flush");
+        }
     }
-} 
+  }

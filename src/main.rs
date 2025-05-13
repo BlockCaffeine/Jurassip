@@ -51,7 +51,7 @@ fn main() {
     list_ports();
 
     // Connect to the serial port
-    let port_result: Result<Box<dyn SerialPort + 'static>, Box<dyn Error + 'static>> = connect("/dev/tty.usbserial-1110", 9600);
+    let port_result: Result<Box<dyn SerialPort + 'static>, Box<dyn Error + 'static>> = connect("/dev/tty.usbserial-140", 9600);
     let mut port: Box<dyn SerialPort + 'static> = match port_result {
         Ok(port) => {
             println!("Port opened successfully");
