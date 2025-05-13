@@ -20,10 +20,12 @@ use serial::connect::connect;
 use serial::serial_read::serial_read;
 use serial::serial_write::serial_write;
 
+use dotenv::dotenv;
 use serialport::SerialPort;
 use std::error::Error;
 
 fn main() {
+    dotenv().ok(); // Load environment variables from .env file
     // Example character to demonstrate conversion of a char to 4 obfuscated bytes and in reverse
 
     let input_char: char = 'N'; // Example character
@@ -51,7 +53,13 @@ fn main() {
     list_ports();
 
     // Connect to the serial port
-    let port_result: Result<Box<dyn SerialPort + 'static>, Box<dyn Error + 'static>> = connect("/dev/tty.usbserial-140", 9600);
+    let port_name = std::env::var("SERIAL_PORT_NAME").expect("SERIAL_PORT environment variable not set");
+    let baud_rate: u32 = std::env::var("SERIAL_BAUD_RATE")
+        .unwrap_or_else(|_| "9600".to_string())
+        .parse()
+        .expect("Invalid baud rate");
+
+    let port_result: Result<Box<dyn SerialPort + 'static>, Box<dyn Error + 'static>> = connect(&port_name, baud_rate);
     let mut port: Box<dyn SerialPort + 'static> = match port_result {
         Ok(port) => {
             println!("Port opened successfully");
