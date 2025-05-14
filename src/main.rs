@@ -18,7 +18,6 @@ use serial::send_command::send_command;
 use dotenv::dotenv;
 use serialport::SerialPort;
 use std::error::Error;
-use std::time::Duration;
 
 fn main() {
     dotenv().ok(); // Load environment variables from .env file
@@ -42,11 +41,11 @@ fn main() {
         }
     };
 
-    let result: Result<String, Box<dyn Error + 'static>> = send_command(&mut port, "AN:01", Duration::from_secs(2));
+    let result:Result<(), Box<dyn Error + 'static>> = send_command(&mut port, "AN:01");
 
     match result {
-        Ok(response) => {
-            println!("Response: {}", response);
+        Ok(()) => {
+            println!("Command sent successfully");
         }
         Err(e) => {
             println!("Error sending command: {}", e);
