@@ -11,14 +11,14 @@ mod serial {
 }
 
 mod api {
-    pub mod make_coffee;
+    pub mod make_product;
 }
 
 use serial::connect::connect;
 // use serial::serial_read::serial_read;
 // use serial::serial_write::serial_write;
 use serial::send_command::send_command;
-use api::make_coffee::make_coffee;
+use api::make_product::make_coffee;
 
 use dotenv::dotenv;
 use serialport::SerialPort;
@@ -48,9 +48,9 @@ fn main() {
 
     make_coffee(
       &mut port,
-        api::make_coffee::CoffeeParameters {
-            coffee_type: api::make_coffee::CoffeeType::Single,
-            strength: api::make_coffee::CoffeeStrength::Normal,
+        api::make_product::CoffeeParameters {
+            coffee_type: api::make_product::ProductType::EspressoSingle,
+            strength: api::make_product::ProductStrength::Extra,
         },
     );
 
