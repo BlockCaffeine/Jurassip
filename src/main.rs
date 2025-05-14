@@ -7,11 +7,13 @@ mod serial {
     pub mod connect;
     pub mod serial_read;
     pub mod serial_write;
+    pub mod send_command;
 }
 
 use serial::connect::connect;
-use serial::serial_read::serial_read;
-use serial::serial_write::serial_write;
+// use serial::serial_read::serial_read;
+// use serial::serial_write::serial_write;
+use serial::send_command::send_command;
 
 use dotenv::dotenv;
 use serialport::SerialPort;
@@ -39,8 +41,19 @@ fn main() {
         }
     };
 
-    serial_write(&mut port); // TESTING ONLY
+    let result: Result<String, Box<dyn Error + 'static>> = send_command(&mut port, "AN:01");
 
-    serial_read(&mut port); // TESTING ONLY - unreachable
+    match result {
+        Ok(response) => {
+            println!("Response: {}", response);
+        }
+        Err(e) => {
+            println!("Error sending command: {}", e);
+        }
+    }
+
+    // serial_write(&mut port); // TESTING ONLY
+
+    // serial_read(&mut port); // TESTING ONLY - unreachable
 
 }

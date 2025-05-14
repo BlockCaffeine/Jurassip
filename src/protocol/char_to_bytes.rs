@@ -1,5 +1,5 @@
-pub fn char_to_bytes(input_char: char) -> [u8; 4] {
-  let ascii: u8 = input_char as u8;
+pub fn char_to_bytes(char: char) -> [u8; 4] {
+  let ascii: u8 = char as u8;
   let ascii_lsb: u8 = reverse_bits(ascii);
   let ascii_obf: [u8; 4] = encode_lsb_to_4_bytes(ascii_lsb);
 
@@ -7,7 +7,7 @@ pub fn char_to_bytes(input_char: char) -> [u8; 4] {
 }
 
 fn reverse_bits(byte: u8) -> u8 {
-  let mut b = byte;
+  let mut b: u8 = byte;
   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;

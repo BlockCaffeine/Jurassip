@@ -1,8 +1,12 @@
-pub fn bytes_to_char(input_bytes: [u8; 4]) -> char {
-    let ascii: u8 = decode_4_bytes_to_ascii(input_bytes);
-
-    let ascii_obf: char = ascii as char;
-    ascii_obf
+pub fn bytes_to_char(input_bytes: &[u8]) -> String {
+    input_bytes
+        .chunks_exact(4)
+        .map(|chunk| {
+            let array: [u8; 4] = chunk.try_into().expect("Invalid chunk size");
+            let ascii: u8 = decode_4_bytes_to_ascii(array);
+            ascii as char
+        })
+        .collect()
 }
 
 fn decode_4_bytes_to_ascii(input_bytes: [u8; 4]) -> u8 {
