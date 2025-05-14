@@ -5,17 +5,11 @@ mod protocol {
 }
 
 mod serial {
-    pub mod list_ports;
     pub mod connect;
     pub mod serial_read;
     pub mod serial_write;
 }
 
-use protocol::char_to_bytes::char_to_bytes;
-use protocol::bytes_to_char::bytes_to_char;
-use protocol::utils::format_obfuscated_bytes;
-
-use serial::list_ports::list_ports;
 use serial::connect::connect;
 use serial::serial_read::serial_read;
 use serial::serial_write::serial_write;
@@ -26,34 +20,9 @@ use std::error::Error;
 
 fn main() {
     dotenv().ok(); // Load environment variables from .env file
-    // Example character to demonstrate conversion of a char to 4 obfuscated bytes and in reverse
-
-    let input_char: char = 'N'; // Example character
-
-    let ascii: u8 = input_char as u8;
-
-    println!("Character: '{}'", input_char);
-    println!("Hex: 0x{:02X}", ascii);
-    println!("Binary: {:08b}", ascii);
-
-    let obfuscated: [u8; 4] = char_to_bytes(input_char);
-
-    println!("Obfuscated: ");
-    for byte in obfuscated.iter() {
-        println!("{}", format_obfuscated_bytes(*byte));
-    }
-
-    println!("REVERSE ------------------");
-
-    let deobfuscated: char = bytes_to_char(obfuscated);
-    println!("Deobfuscated: '{}'", deobfuscated);
-
-
-    // Serial connection testing
-    list_ports();
 
     // Connect to the serial port
-    let port_name = std::env::var("SERIAL_PORT_NAME").expect("SERIAL_PORT environment variable not set");
+    let port_name: String = std::env::var("SERIAL_PORT_NAME").expect("SERIAL_PORT environment variable not set");
     let baud_rate: u32 = std::env::var("SERIAL_BAUD_RATE")
         .unwrap_or_else(|_| "9600".to_string())
         .parse()
@@ -74,5 +43,5 @@ fn main() {
     serial_write(&mut port); // TESTING ONLY
 
     serial_read(&mut port); // TESTING ONLY - unreachable
-    
+
 }
