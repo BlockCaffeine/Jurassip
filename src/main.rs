@@ -10,10 +10,15 @@ mod serial {
     pub mod send_command;
 }
 
+mod api {
+    pub mod make_coffee;
+}
+
 use serial::connect::connect;
 // use serial::serial_read::serial_read;
 // use serial::serial_write::serial_write;
 use serial::send_command::send_command;
+use api::make_coffee::make_coffee;
 
 use dotenv::dotenv;
 use serialport::SerialPort;
@@ -41,16 +46,24 @@ fn main() {
         }
     };
 
-    let result:Result<(), Box<dyn Error + 'static>> = send_command(&mut port, "AN:01");
+    make_coffee(
+      &mut port,
+        api::make_coffee::CoffeeParameters {
+            coffee_type: api::make_coffee::CoffeeType::Single,
+            strength: api::make_coffee::CoffeeStrength::Normal,
+        },
+    );
 
-    match result {
-        Ok(()) => {
-            println!("Command sent successfully");
-        }
-        Err(e) => {
-            println!("Error sending command: {}", e);
-        }
-    }
+    // let result:Result<(), Box<dyn Error + 'static>> = send_command(&mut port, "AN:01");
+
+    // match result {
+    //     Ok(()) => {
+    //         println!("Command sent successfully");
+    //     }
+    //     Err(e) => {
+    //         println!("Error sending command: {}", e);
+    //     }
+    // }
 
     // serial_write(&mut port); // TESTING ONLY
 
