@@ -43,52 +43,54 @@ fn send_crlf_sequence(port: &mut Box<dyn SerialPort>) {
 }
 
 fn read_response(port: &mut Box<dyn SerialPort>, timeout: Duration) -> Result<String, Box<dyn std::error::Error>> {
-    let mut buffer: Vec<u8> = vec![0; 1024];
+    let mut buffer: Vec<u8> = vec![0; 1]; // Read one byte at a time
     let mut decoded_response = String::new();
-    let mut temp_char: u8 = 0;
-    let mut bit_position = 0;
+    let mut in_bits = String::new();
+    let start_time = std::time::Instant::now();
 
     // Set the read timeout
     port.set_timeout(timeout)?;
 
     loop {
+        // Check for timeout
+        if start_time.elapsed() > timeout {
+            eprintln!("Timeout reading result");
+            return Err(Box::new(std::io::Error::new(
+                std::io::ErrorKind::TimedOut,
+                "Timeout reading result",
+            )));
+        }
+
         match port.read(&mut buffer) {
             Ok(bytes_read) => {
                 if bytes_read > 0 {
-                    for &raw_byte in &buffer[..bytes_read] {
-                        // Extract bits 2 and 5 from the raw byte
-                        let bit_2 = (raw_byte >> 2) & 1;
-                        let bit_5 = (raw_byte >> 5) & 1;
+                    let raw_byte = buffer[0];
+                    let raw_bits = format!("{:08b}", raw_byte); // Convert byte to binary string
 
-                        // Reconstruct the character by setting the appropriate bits
-                        temp_char |= bit_2 << bit_position;
-                        temp_char |= bit_5 << (bit_position + 1);
+                    // Extract bits 2 and 5
+                    in_bits.push(raw_bits.chars().nth(2).unwrap());
+                    in_bits.push(raw_bits.chars().nth(5).unwrap());
 
-                        bit_position += 2;
-
-                        // If we've reconstructed a full character (8 bits), append it
-                        if bit_position >= 8 {
-                            decoded_response.push(temp_char as char);
-                            temp_char = 0;
-                            bit_position = 0;
-                        }
+                    // If we've reconstructed a full character (8 bits), decode it
+                    if in_bits.len() == 8 {
+                        let byte = u8::from_str_radix(&in_bits, 2).unwrap();
+                        decoded_response.push(byte as char);
+                        in_bits.clear();
                     }
-                } else {
-                    break;
+
+                    // Check if the response ends with CR LF (\r\n)
+                    if decoded_response.ends_with("\r\n") {
+                        break;
+                    }
                 }
             }
             Err(e) => {
                 if e.kind() == std::io::ErrorKind::TimedOut {
-                    break; // Timeout reached, exit the loop
+                    continue; // Retry on timeout
                 } else {
                     return Err(Box::new(e));
                 }
             }
-        }
-
-        // Check if the response ends with CR LF (\r\n)
-        if decoded_response.ends_with("\r\n") {
-            break;
         }
     }
 
@@ -99,3 +101,4 @@ fn read_response(port: &mut Box<dyn SerialPort>, timeout: Duration) -> Result<St
 
     Ok(decoded_response)
 }
+
