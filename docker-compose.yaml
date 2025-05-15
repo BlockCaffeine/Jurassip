@@ -1,0 +1,6 @@
+services:
+  jurassip:
+    build: .
+    ports:
+      - "50051:50051"
+    restart: unless-stopped
