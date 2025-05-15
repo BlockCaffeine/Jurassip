@@ -1,30 +1,15 @@
-use crate::serial::send_command::send_command;
 use serialport::SerialPort;
+use anyhow::Result;
 
-// Define an enum for coffee type
-pub enum ProductType {
-    CoffeeSingle,
-    CoffeeDouble,
-    EspressoSingle,
-    EspressoDouble,
-}
+use crate::serial::connection::connect;
+use crate::serial::send_command::send_command;
 
-// Define an enum for coffee strength
-pub enum ProductStrength {
-    Mild,
-    Normal,
-    Strong,
-    Extra,
-}
-
-// Define a struct to hold the parameters for making coffee
-pub struct CoffeeParameters {
-    pub coffee_type: ProductType,
-    pub strength: ProductStrength,
-}
+use crate::api::product_definitions::{CoffeeParameters, ProductType, ProductStrength};
 
 // Function to make coffee
-pub fn make_coffee(port: &mut Box<dyn SerialPort>, params: CoffeeParameters) {
+pub fn make_coffee(params: CoffeeParameters) -> Result<()> {
+    let mut port: Box<dyn SerialPort + 'static> = connect()?;
+
     let command: &'static str = match params.coffee_type {
         ProductType::CoffeeSingle => "FA:09",
         ProductType::CoffeeDouble => "FA:0A",
@@ -41,11 +26,14 @@ pub fn make_coffee(port: &mut Box<dyn SerialPort>, params: CoffeeParameters) {
 
     println!("Command: {}, Strength: {}", command, strength);
 
+    // Set the strength
     for _ in 0..strength {
-        send_command(port, "FA:05");
+        send_command(&mut port, "FA:05")?;
         std::thread::sleep(std::time::Duration::from_millis(500));
     }
-    send_command(port, command);
 
-    println!("Your product is ready!");
+    // Send the command to make coffee or espresso
+    send_command(&mut port, command)?;
+
+    Ok(())
 }

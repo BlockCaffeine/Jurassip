@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package jurassip;
+
+service CoffeeMaker {
+  rpc MakeProduct (MakeProductRequest) returns (MakeProductResponse);
+}
+
+message MakeProductRequest {
+  string coffee_type = 1; // e.g., "CoffeeSingle", "EspressoDouble"
+  string strength = 2;    // e.g., "Mild", "Strong"
+}
+
+message MakeProductResponse {
+  string message = 1; // e.g., "Your product is ready!"
+}

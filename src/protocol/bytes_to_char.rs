@@ -1,3 +1,10 @@
+/// Converts a slice of obfuscated bytes into a string.
+/// 
+/// # Arguments
+/// * `input_bytes` - A slice of obfuscated bytes to decode.
+/// 
+/// # Returns
+/// A string representing the decoded characters.
 pub fn bytes_to_char(input_bytes: &[u8]) -> String {
     input_bytes
         .chunks_exact(4)
@@ -9,6 +16,13 @@ pub fn bytes_to_char(input_bytes: &[u8]) -> String {
         .collect()
 }
 
+/// Decodes a 4-byte obfuscated array into an ASCII byte.
+/// 
+/// # Arguments
+/// * `input_bytes` - A 4-byte array to decode.
+/// 
+/// # Returns
+/// The decoded ASCII byte.
 fn decode_4_bytes_to_ascii(input_bytes: [u8; 4]) -> u8 {
     let mut decoded_byte: u8 = 0;
 
