@@ -17,9 +17,9 @@ impl CoffeeMaker for CoffeeMakerService {
         &self,
         request: Request<MakeProductRequest>,
     ) -> Result<Response<MakeProductResponse>, Status> {
-        let req = request.into_inner();
+        let req: MakeProductRequest = request.into_inner();
 
-        let coffee_type = match req.coffee_type.as_str() {
+        let coffee_type: ProductType = match req.coffee_type.as_str() {
             "CoffeeSingle" => ProductType::CoffeeSingle,
             "CoffeeDouble" => ProductType::CoffeeDouble,
             "EspressoSingle" => ProductType::EspressoSingle,
@@ -27,7 +27,7 @@ impl CoffeeMaker for CoffeeMakerService {
             _ => return Err(Status::invalid_argument("Invalid coffee type")),
         };
 
-        let strength = match req.strength.as_str() {
+        let strength: ProductStrength = match req.strength.as_str() {
             "Mild" => ProductStrength::Mild,
             "Normal" => ProductStrength::Normal,
             "Strong" => ProductStrength::Strong,
@@ -35,7 +35,7 @@ impl CoffeeMaker for CoffeeMakerService {
             _ => return Err(Status::invalid_argument("Invalid strength")),
         };
 
-        let params = CoffeeParameters {
+        let params: CoffeeParameters = CoffeeParameters {
             coffee_type,
             strength,
         };
@@ -44,7 +44,7 @@ impl CoffeeMaker for CoffeeMakerService {
             return Err(Status::internal(format!("Failed to make product: {}", e)));
         }
 
-        let response = MakeProductResponse {
+        let response: MakeProductResponse = MakeProductResponse {
             message: "Your product is ready!".to_string(),
         };
 
@@ -53,7 +53,7 @@ impl CoffeeMaker for CoffeeMakerService {
 }
 
 pub async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
-    let addr = "[::1]:50051".parse()?;
+    let addr: std::net::SocketAddr = "127.0.0.1:50051".parse()?;
     let coffee_maker = CoffeeMakerService::default();
 
     println!("Server listening on {}", addr);
