@@ -5,6 +5,7 @@
 /// 
 /// # Returns
 /// A string representing the decoded characters.
+#[allow(dead_code)]
 pub fn bytes_to_char(input_bytes: &[u8]) -> String {
     input_bytes
         .chunks_exact(4)

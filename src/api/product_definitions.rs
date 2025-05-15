@@ -1,4 +1,5 @@
 // Define an enum for coffee type
+#[allow(dead_code)]
 pub enum ProductType {
     CoffeeSingle,
     CoffeeDouble,
@@ -7,6 +8,7 @@ pub enum ProductType {
 }
 
 // Define an enum for coffee strength
+#[allow(dead_code)]
 pub enum ProductStrength {
     Mild,
     Normal,
