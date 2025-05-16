@@ -4,20 +4,20 @@ use anyhow::Result;
 use crate::serial::connection::connect;
 use crate::serial::send_command::send_command;
 
-use crate::api::product_definitions::{CoffeeParameters, ProductType, ProductStrength};
+use crate::api::product_definitions::{ProductParameters, ProductType, ProductStrength};
 
 // Function to make coffee
-pub fn make_coffee(params: CoffeeParameters) -> Result<()> {
+pub fn make_product(params: ProductParameters) -> Result<()> {
     let mut port: Box<dyn SerialPort + 'static> = connect()?;
 
-    let command: &'static str = match params.coffee_type {
-        ProductType::CoffeeSingle => "FA:09",
-        ProductType::CoffeeDouble => "FA:0A",
-        ProductType::EspressoSingle => "FA:07",
-        ProductType::EspressoDouble => "FA:08",
+    let command: &'static str = match params.product_type {
+        ProductType::SingleCoffee => "FA:09",
+        ProductType::DoubleCoffee => "FA:0A",
+        ProductType::SingleEspresso => "FA:07",
+        ProductType::DoubleEspresso => "FA:08",
     };
 
-    let strength: i32 = match params.strength {
+    let strength: i32 = match params.product_strength {
         ProductStrength::Mild => 1,
         ProductStrength::Normal => 2,
         ProductStrength::Strong => 3,

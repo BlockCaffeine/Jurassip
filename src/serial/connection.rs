@@ -9,9 +9,18 @@ pub fn connect() -> Result<Box<dyn SerialPort + 'static>> {
         .parse()
         .expect("Invalid baud rate");
 
-    let port: Box<dyn SerialPort + 'static> = serialport::new(port_name, baud_rate)
+    let port_result: std::result::Result<Box<dyn SerialPort + 'static>, serialport::Error> = serialport::new(&port_name, baud_rate)
         .timeout(Duration::from_millis(10))
-        .open()?;
+        .open();
 
-    Ok(port)
+    match port_result {
+        Ok(port) => Ok(port),
+        Err(e) => {
+            let err_str: String = e.to_string();
+            if err_str.contains("No such file or directory") {
+                anyhow::bail!("Serial port '{}' not found ({}). Make sure the device is connected", port_name, e);
+            }
+            Err(anyhow::anyhow!("Failed to open serial port '{}': {}", port_name, e))
+        }
+    }
 }

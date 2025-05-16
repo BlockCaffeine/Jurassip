@@ -3,6 +3,8 @@ services:
     build: .
     ports:
       - "50051:50051"
-    restart: unless-stopped
     env_file:
       - .env
+#    volumes:
+#      - /dev/ttyAMA2:/dev/ttyAMA2:ro
+    restart: unless-stopped

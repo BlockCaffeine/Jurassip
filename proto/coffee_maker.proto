@@ -3,14 +3,18 @@ syntax = "proto3";
 package jurassip;
 
 service CoffeeMaker {
-  rpc MakeProduct (MakeProductRequest) returns (MakeProductResponse);
+  rpc MachineOn (Empty) returns (MachineResponse);
+  rpc MachineOff (Empty) returns (MachineResponse);
+  rpc MakeProduct (MakeProductRequest) returns (MachineResponse);
 }
 
 message MakeProductRequest {
-  string coffee_type = 1; // e.g., "CoffeeSingle", "EspressoDouble"
-  string strength = 2;    // e.g., "Mild", "Strong"
+  string product_type = 1; // e.g., "SingleCoffee"
+  string product_strength = 2; // e.g., "Mild"
 }
 
-message MakeProductResponse {
+message MachineResponse {
   string message = 1; // e.g., "Your product is ready!"
 }
+
+message Empty {}

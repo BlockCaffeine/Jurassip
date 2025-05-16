@@ -1,10 +1,10 @@
 // Define an enum for coffee type
 #[allow(dead_code)]
 pub enum ProductType {
-    CoffeeSingle,
-    CoffeeDouble,
-    EspressoSingle,
-    EspressoDouble,
+    SingleCoffee,
+    DoubleCoffee,
+    SingleEspresso,
+    DoubleEspresso,
 }
 
 // Define an enum for coffee strength
@@ -17,7 +17,7 @@ pub enum ProductStrength {
 }
 
 // Define a struct to hold the parameters for making coffee
-pub struct CoffeeParameters {
-    pub coffee_type: ProductType,
-    pub strength: ProductStrength,
+pub struct ProductParameters {
+    pub product_type: ProductType,
+    pub product_strength: ProductStrength,
 }
